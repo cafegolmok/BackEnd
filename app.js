@@ -3,16 +3,16 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
+// const authRoutes = require('./routes/authRoutes');
 
 // Import error handler
-const errorHandler = require('./middlewares/errorHandler');
+// const errorHandler = require('./middlewares/errorHandler');
 
 // JSON 데이터 파싱을 위한 미들웨어
 app.use(express.json());
 
 // Use routes
-app.use(authRoutes);
+// app.use(authRoutes);
 
 // 404 에러 처리
 app.use((req, res, next) => {
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 // Use error handler
-app.use(errorHandler);
+// app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`서버가 ${PORT} 포트에서 실행 중입니다.`);

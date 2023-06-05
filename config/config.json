@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Wlgns1994!",
+    "database": "cafegolmok",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "Wlgns1994!",
+    "database": "cafegolmok",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "Wlgns1994!",
+    "database": "cafegolmok",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
