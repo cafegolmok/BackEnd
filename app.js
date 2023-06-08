@@ -1,18 +1,20 @@
+// app.js
+
 const express = require("express");
 const app = express();
+const userRoutes = require("./routes/userRoutes");
+const cafeRoutes = require("./routes/cafeRoutes")
 const PORT = process.env.PORT || 8000;
 
-// Import routes
-// const authRoutes = require('./routes/authRoutes');
-
-// Import error handler
+// error handler 가져오기
 // const errorHandler = require('./middlewares/errorHandler');
 
 // JSON 데이터 파싱을 위한 미들웨어
 app.use(express.json());
 
-// Use routes
-// app.use(authRoutes);
+// 라우팅 설정
+app.use("/", cafeRoutes);
+app.use("/users", userRoutes);
 
 // 404 에러 처리
 app.use((req, res, next) => {
@@ -21,7 +23,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// Use error handler
+// error handler 설정
 // app.use(errorHandler);
 
 app.listen(PORT, () => {
