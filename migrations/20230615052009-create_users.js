@@ -1,4 +1,5 @@
 "use strict";
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Users", {
@@ -9,16 +10,30 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       nickname: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(20),
+        allowNull: false,
       },
       email: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(50),
+        unique: true,
+        allowNull: false,
       },
       password: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
+        allowNull: false,
       },
       profileImage: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
+      },
+      userType: {
+        type: Sequelize.ENUM,
+        values: ["admin", "user"],
+        defaultValue: "user",
+      },
+      userStatus: {
+        type: Sequelize.ENUM,
+        values: ["active", "inactive", "deleted"],
+        defaultValue: "active",
       },
       createdAt: {
         allowNull: false,
@@ -27,14 +42,6 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-      },
-      userType: {
-        type: Sequelize.ENUM("admin", "user"),
-        defaultValue: "user",
-      },
-      userStatus: {
-        type: Sequelize.ENUM("active", "inactive", "deleted"),
-        defaultValue: "active",
       },
     });
   },

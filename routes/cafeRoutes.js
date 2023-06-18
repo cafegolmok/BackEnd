@@ -14,7 +14,7 @@ router
 router
   .route("/:id")
   .get(cafeController.getCafe)
-  .put(cafeController.updateCafe)
+  .patch(cafeController.updateCafe)
   .delete(cafeController.deleteCafe);
 
 module.exports = router;
