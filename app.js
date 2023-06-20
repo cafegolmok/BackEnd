@@ -3,11 +3,9 @@
 const express = require("express");
 const app = express();
 const userRoutes = require("./routes/userRoutes");
-const cafeRoutes = require("./routes/cafeRoutes")
+const cafeRoutes = require("./routes/cafeRoutes");
+const { errorHandler, adminAuth } = require("./middlewares");
 const PORT = process.env.PORT || 8000;
-
-// error handler 가져오기
-// const errorHandler = require('./middlewares/errorHandler');
 
 // JSON 데이터 파싱을 위한 미들웨어
 app.use(express.json());
@@ -24,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 // error handler 설정
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`서버가 ${PORT} 포트에서 실행 중입니다.`);
