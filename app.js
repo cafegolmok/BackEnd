@@ -4,6 +4,11 @@ const express = require("express");
 const app = express();
 const userRoutes = require("./routes/userRoutes");
 const cafeRoutes = require("./routes/cafeRoutes");
+const bookmarkRoutes = require("./routes/bookmarkRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
+const tagRoutes = require("./routes/tagRoutes");
+// const 
+
 const { errorHandler, adminAuth } = require("./middlewares");
 const PORT = process.env.PORT || 8000;
 
@@ -11,8 +16,11 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 
 // 라우팅 설정
-app.use("/", cafeRoutes);
 app.use("/users", userRoutes);
+app.use("/cafes", cafeRoutes);
+app.use("/bookmarks", bookmarkRoutes);
+app.use("/reviews", reviewRoutes);
+app.use('/tags', tagRoutes)
 
 // 404 에러 처리
 app.use((req, res, next) => {
