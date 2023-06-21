@@ -62,9 +62,6 @@ module.exports = {
       goodForMeetings: {
         type: Sequelize.FLOAT,
       },
-      body: {
-        type: Sequelize.TEXT,
-      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
