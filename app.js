@@ -7,7 +7,6 @@ const cafeRoutes = require("./routes/cafeRoutes");
 const bookmarkRoutes = require("./routes/bookmarkRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const tagRoutes = require("./routes/tagRoutes");
-// const 
 
 const { errorHandler, adminAuth } = require("./middlewares");
 const PORT = process.env.PORT || 8000;
