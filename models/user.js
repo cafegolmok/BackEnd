@@ -5,7 +5,6 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  
   // User 클래스 선언
   // Sequelize Model을 상속 받는 User 클래스는 DB의 Users 테이블과 매핑
   class User extends Model {
@@ -13,12 +12,16 @@ module.exports = (sequelize) => {
     // 다른 모델과의 관계를 선언하는 메서드
     static associate(models) {
       // User 모델은 여러 개의 Bookmark 모델을 가질 수 있다.
-      // foreignKey는 Bookmark 모델이 User 모델을 참조하는데 사용되는 키를 지정
       User.hasMany(models.Bookmark, { foreignKey: "userId", as: "bookmarks" });
 
       // User 모델은 여러 개의 Review 모델을 가질 수 있다.
-      // foreignKey는 Review 모델이 User 모델을 참조하는데 사용되는 키를 지정
       User.hasMany(models.Review, { foreignKey: "userId", as: "reviews" });
+
+      // User 모델은 여러 개의 UserAuth 모델을 가질 수 있다.
+      User.hasMany(models.UserAuth, { foreignKey: "userId", as: "userAuths" });
+
+      // User 모델은 여러 개의 Token 모델을 가질 수 있다.
+      User.hasMany(models.Token, { foreignKey: "userId", as: "tokens" });
     }
   }
 

@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING(15),
         allowNull: true,
       },
-      information: {
+      convenienceInformation: {
         type: Sequelize.STRING(255),
         allowNull: true,
       },

@@ -46,7 +46,7 @@ module.exports = (sequelize) => {
 
       comment: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: false,
       },
 
       // 커피 맛에 대한 평가
@@ -103,9 +103,6 @@ module.exports = (sequelize) => {
       goodForMeetings: {
         type: DataTypes.FLOAT,
       },
-
-      // 리뷰의 본문
-      body: DataTypes.TEXT,
     },
     {
       sequelize,
