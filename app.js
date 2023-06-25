@@ -2,11 +2,14 @@
 
 const express = require("express");
 const app = express();
+
 const userRoutes = require("./routes/userRoutes");
 const cafeRoutes = require("./routes/cafeRoutes");
 const bookmarkRoutes = require("./routes/bookmarkRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const tagRoutes = require("./routes/tagRoutes");
+const authRoutes = require('./routes/authRoutes');
+
 
 const { errorHandler, adminAuth } = require("./middlewares");
 const PORT = process.env.PORT || 8000;
@@ -20,6 +23,7 @@ app.use("/cafes", cafeRoutes);
 app.use("/bookmarks", bookmarkRoutes);
 app.use("/reviews", reviewRoutes);
 app.use('/tags', tagRoutes)
+app.use('/auth', authRoutes);
 
 // 404 에러 처리
 app.use((req, res, next) => {
