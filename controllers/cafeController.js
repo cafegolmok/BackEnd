@@ -2,6 +2,8 @@
 
 const { Cafe } = require("../models");
 const upload = require("../multerConfig");
+const multer = require("multer");
+const fs = require("fs");
 
 // 모든 카페를 가져오는 함수
 exports.getAllCafes = async (req, res) => {
@@ -33,13 +35,21 @@ exports.getCafe = async (req, res) => {
 exports.createCafe = [
   upload.single("image"),
   (error, req, res, next) => {
-    if (error.code === "INCORRECT_FILETYPE") {
-      res.status(422).json({ error: "이미지만 허용됩니다" });
-      return;
-    }
     if (error) {
-      res.status(500).json({ error });
-      return;
+      if (error.code === "LIMIT_FILE_SIZE") {
+        res
+          .status(400)
+          .json({
+            error: "파일 크기가 너무 큽니다. 10MB 이하의 파일만 허용됩니다.",
+          });
+        return;
+      } else if (error.code === "INCORRECT_FILETYPE") {
+        res.status(400).json({ error: "이미지만 허용됩니다" });
+        return;
+      } else {
+        res.status(500).json({ error: "파일 업로드 중 에러가 발생했습니다" });
+        return;
+      }
     }
 
     next();
@@ -70,13 +80,26 @@ exports.updateCafe = [
   async (req, res) => {
     try {
       let updatedInfo = req.body;
+      const cafe = await Cafe.findByPk(req.params.id);
 
       if (req.file) {
-        // 새 이미지 파일이 있을 경우, 파일 경로 업데이트
+        // 새 이미지 파일이 있을 경우
+
+        // 기존의 이미지 파일이 있으면 삭제
+        if (cafe.image && fs.existsSync(cafe.image)) {
+          fs.unlink(cafe.image, (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+          });
+        }
+        // 새 이미지 파일 경로를 업데이트
         updatedInfo.image = req.file.path;
       }
 
-      const cafe = await Cafe.update(updatedInfo, {
+      // 카페 정보를 업데이트
+      await Cafe.update(updatedInfo, {
         where: { id: req.params.id },
       });
 
@@ -99,11 +122,26 @@ exports.updateCafe = [
 // 카페를 삭제하는 함수
 exports.deleteCafe = async (req, res) => {
   try {
-    const cafe = await Cafe.destroy({
-      where: { id: req.params.id },
-    });
+    const cafe = await Cafe.findByPk(req.params.id);
+
     if (!cafe)
       return res.status(404).json({ message: "해당 카페를 찾을 수 없습니다" });
+
+    // 카페의 이미지 파일이 있으면 삭제
+    if (cafe.image && fs.existsSync(cafe.image)) {
+      fs.unlink(cafe.image, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    }
+
+    // 카페를 삭제
+    await Cafe.destroy({
+      where: { id: req.params.id },
+    });
+
     res.status(200).json({ message: "카페가 성공적으로 삭제되었습니다" });
     console.log(req.body);
   } catch (error) {

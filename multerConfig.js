@@ -30,7 +30,7 @@ const upload = multer({
   storage: storage,
   fileFilter,
   limits: {
-    fileSize: 15000000, // 파일 사이즈 15MB로 제한
+    fileSize: 10000000, // 파일 사이즈 10MB로 제한
   },
 });
 
