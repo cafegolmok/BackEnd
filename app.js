@@ -8,10 +8,16 @@ const cafeRoutes = require("./routes/cafeRoutes");
 const bookmarkRoutes = require("./routes/bookmarkRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const tagRoutes = require("./routes/tagRoutes");
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require("./routes/authRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 
+const {
+  errorHandler,
+  adminAuth,
+  isLoggedIn,
+  isNotLoggedIn,
+} = require("./middlewares");
 
-const { errorHandler, adminAuth } = require("./middlewares");
 const PORT = process.env.PORT || 8000;
 
 // JSON 데이터 파싱을 위한 미들웨어
@@ -22,8 +28,9 @@ app.use("/users", userRoutes);
 app.use("/cafes", cafeRoutes);
 app.use("/bookmarks", bookmarkRoutes);
 app.use("/reviews", reviewRoutes);
-app.use('/tags', tagRoutes)
-app.use('/auth', authRoutes);
+app.use("/tags", tagRoutes);
+app.use("/auth", authRoutes);
+app.use("/categories", categoryRoutes);
 
 // 404 에러 처리
 app.use((req, res, next) => {
