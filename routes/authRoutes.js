@@ -3,8 +3,9 @@
 const router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const { isNotLoggedIn } = require("../middlewares");
 
-router.post("/login", (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({

@@ -2,17 +2,18 @@
 
 const express = require("express");
 const bookmarkController = require("../controllers/bookmarkController");
+const { isLoggedIn } = require("../middlewares");
 const router = express.Router();
 
 router
   .route("/")
-  .get(bookmarkController.getAllBookmarks)
-  .post(bookmarkController.createBookmark);
+  .get(isLoggedIn, bookmarkController.getAllBookmarks)
+  .post(isLoggedIn, bookmarkController.createBookmark);
 
 router
   .route("/:id")
-  .get(bookmarkController.getBookmark)
-  .patch(bookmarkController.updateBookmark)
-  .delete(bookmarkController.deleteBookmark);
+  .get(isLoggedIn, bookmarkController.getBookmark)
+  .patch(isLoggedIn, bookmarkController.updateBookmark)
+  .delete(isLoggedIn, bookmarkController.deleteBookmark);
 
 module.exports = router;
