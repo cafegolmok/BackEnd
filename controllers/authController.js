@@ -5,7 +5,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-// 사용자 가입 처리
+// 회원가입 처리
 exports.signup = async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
@@ -59,7 +59,7 @@ exports.login = (req, res, next) => {
       // JWT 토큰 생성
       const token = jwt.sign(JSON.stringify(payload), process.env.JWT_SECRET);
 
-      // 토큰을 반환
+      // 토큰 반환
       return res.json({ user, token });
     });
   })(req, res, next);
