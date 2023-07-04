@@ -11,13 +11,13 @@ const { isLoggedIn } = require("../middlewares");
 router
   .route("/")
   .get(cafeController.getAllCafes)
-  .post(isLoggedIn, upload.single("image"), cafeController.createCafe);
+  .post(isLoggedIn, upload.array("image"), cafeController.createCafe);
 
 // 특정 카페의 정보를 조회, 수정, 삭제하는 라우트
 router
   .route("/:id")
   .get(cafeController.getCafe)
-  .patch(isLoggedIn, upload.single("image"), cafeController.updateCafe)
+  .patch(isLoggedIn, upload.array("image"), cafeController.updateCafe)
   .delete(isLoggedIn, cafeController.deleteCafe);
 
 module.exports = router;
