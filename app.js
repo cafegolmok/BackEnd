@@ -27,16 +27,16 @@ const {
 } = require("./middlewares");
 const PORT = process.env.PORT || 8000;
 
-passportConfig();
 dotenv.config();
+passportConfig();
 
 // 미들웨어 설정
 app.use(morgan("dev")); // HTTP 요청을 로그로 남김
 
 app.use(
   cors({
-    // CORS 정책을 설정합니다.
-    origin: "http://localhost:3001",
+    // CORS 정책 설정
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -47,10 +47,13 @@ app.use(express.urlencoded({ extended: true })); // URL-encoded 요청 본문을
 app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키 파싱
 app.use(
   session({
-    // 세션 설정
-    saveUninitialized: false,
     resave: false,
+    saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    },
   })
 );
 app.use(passport.initialize()); // Passport를 초기화
