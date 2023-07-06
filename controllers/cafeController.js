@@ -33,7 +33,7 @@ exports.getCafe = async (req, res) => {
 
 // 새로운 카페를 생성하는 함수
 exports.createCafe = [
-  upload.single("image"),
+  upload.array("image"),
   (error, req, res, next) => {
     if (error) {
       if (error.code === "LIMIT_FILE_SIZE") {
@@ -61,7 +61,7 @@ exports.createCafe = [
       }
       const newCafe = await Cafe.create({
         ...req.body, // 기존 form 데이터
-        image: req.file.path, // 이미지 경로 추가
+        image: req.file.path, // 이미지 경로 추가 
       });
       res.status(201).json(newCafe);
       console.log(req.body);
@@ -76,7 +76,7 @@ exports.createCafe = [
 
 // 카페 정보를 수정하는 함수
 exports.updateCafe = [
-  upload.single("image"),
+  upload.array("image"),
   async (req, res) => {
     try {
       let updatedInfo = req.body;
