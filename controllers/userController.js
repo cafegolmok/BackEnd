@@ -57,20 +57,22 @@ exports.updateUser = [
   upload.single("image"),
   async (req, res) => {
     try {
-      const updatedUser = { ...req.body };
-      if (req.file) updatedUser.image = req.file.path;
-      const user = await User.update(updatedUser, {
-        where: { id: req.params.id },
-      });
+      const user = await User.findByPk(req.params.id);
       if (!user)
         return res.status(404).json({ message: "사용자를 찾을 수 없습니다" });
+
+      const updatedUser = { ...req.body };
+      if (req.file) updatedUser.image = req.file.path;
+
+      await user.update(updatedUser);
       res
         .status(200)
-        .json({ message: "사용자가 성공적으로 업데이트되었습니다" });
+        .json({ message: "사용자가 성공적으로 업데이트되었습니다." });
     } catch (error) {
       res
         .status(400)
-        .json({ message: "사용자를 업데이트하는 중 오류가 발생했습니다" });
+        .json({ message: "사용자를 업데이트하는 중 오류가 발생했습니다." });
+      console.error(error);
     }
   },
 ];

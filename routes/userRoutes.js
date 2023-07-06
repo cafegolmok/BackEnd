@@ -18,13 +18,5 @@ router
   .patch(isLoggedIn, userController.updateUser)
   .delete(isLoggedIn, userController.deleteUser);
 
-// 회원가입 라우트를 설정
-// router.post("/signup", isNotLoggedIn, userController.signup);
-
-// 로그인 라우트 설정
-// router.post("/login", isNotLoggedIn, authController.login);
-
-// 로그아웃 라우트 설정
-// router.post("/logout", isLoggedIn, authController.logout);
 
 module.exports = router;
