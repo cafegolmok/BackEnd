@@ -3,16 +3,21 @@
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { User } = require("../models");
+const upload = require("../multerConfig");
+
 const {
   validateSignupEmail,
   validateSignupPassword,
   validateSignupNickname,
   validateSignupPasswordConfirm,
+  validateLoginEmail,
+  validateLoginPassword,
 } = require("../validations/validation.js");
 
 // 회원가입 처리
 exports.signup = async (req, res, next) => {
   const { email, nickname, password, passwordConfirm } = req.body;
+
   // 회원가입 입력 유효성 검사
   const emailErrors = validateSignupEmail(email);
   const passwordErrors = validateSignupPassword(password);
@@ -63,41 +68,102 @@ exports.signup = async (req, res, next) => {
     // 비밀번호를 해시 처리
     const hash = await bcrypt.hash(password, 12);
     // 새로운 사용자 생성
-    await User.create({
+    const newUser = await User.create({
       email,
       nickname,
       password: hash,
     });
-    // 회원가입 성공 메시지 반환
-    return res
-      .status(201)
-      .json({ message: "회원가입이 성공적으로 완료되었습니다." });
+
+    // Passport login
+    req.login(newUser, (loginErr) => {
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+      return res.status(201).json({
+        message: "회원가입이 성공적으로 완료되었습니다.",
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          nickname: newUser.nickname,
+        },
+      });
+    });
   } catch (error) {
     console.error(error);
     return next(error);
   }
 };
 
+// 프로필 이미지 업데이트
+exports.updateProfileImage = [
+  upload.single("profileImage"),
+  async (req, res, next) => {
+    const { id } = req.user;
+
+    try {
+      const updatedUser = {};
+
+      if (req.file) updatedUser.profileImage = req.file.path;
+
+      // 사용자 정보 업데이트
+      const user = await User.update(updatedUser, { where: { id } });
+
+      // 업데이트 성공 메시지 반환
+      return res.status(200).json({
+        message: "프로필 이미지가 성공적으로 업데이트되었습니다.",
+        user,
+      });
+    } catch (error) {
+      console.error(error);
+      return next(error);
+    }
+  },
+];
+
 // 로그인 처리
-exports.login = (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      console.error(err);
-      return next(err);
-    }
-    if (!user) {
-      return res.status(400).send(info.message);
-    }
-    return req.login(user, async (loginErr) => {
-      if (loginErr) {
-        console.error(loginErr);
-        return next(loginErr);
-      }
-      return res
-        .status(200)
-        .json({ message: "로그인이 성공적으로 완료되었습니다." });
+exports.login = async (req, res, next) => {
+  // 로그인 입력 유효성 검사
+  const { email, password } = req.body;
+  const emailErrors = validateLoginEmail(email);
+  const passwordErrors = validateLoginPassword(password);
+
+  if (emailErrors.length > 0 || passwordErrors.length > 0) {
+    return res.status(400).json({
+      errors: {
+        email: emailErrors,
+        password: passwordErrors,
+      },
     });
-  })(req, res, next);
+  }
+
+  try {
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error(err);
+        return next(err);
+      }
+      if (!user) {
+        return res.status(401).json({
+          message: "로그인 정보가 올바르지 않습니다. 다시 시도해 주세요.",
+        });
+      }
+      return req.login(user, async (loginErr) => {
+        if (loginErr) {
+          console.error(loginErr);
+          return next(loginErr);
+        }
+        return res
+          .status(200)
+          .json({ message: "로그인이 성공적으로 완료되었습니다." });
+      });
+    })(req, res, next);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "서버 내부 오류가 발생했습니다. 다시 시도해 주세요." });
+  }
 };
 
 // 로그아웃 처리
