@@ -37,22 +37,22 @@ app.use(
   cors({
     // CORS 정책 설정
     origin: "http://localhost:3000",
-    credentials: true,
+    credentials: true, // 클라이언트에서 보낸 쿠키를 서버에서도 받을 수 있게
   })
 );
 
 app.use(express.json()); // JSON 데이터 파싱을 위한 미들웨어
 
-app.use(express.urlencoded({ extended: true })); // URL-encoded 요청 본문을 파싱
 app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키 파싱
 app.use(
   session({
-    resave: false,
-    saveUninitialized: false,
+    resave: false, // 세션을 언제나 저장할지 정하는 옵션
+    saveUninitialized: false, // 세션이 저장되기 전에 uninitialized 상태로 미리 만들어서 저장하는지 정하는 옵션
     secret: process.env.COOKIE_SECRET,
     cookie: {
-      httpOnly: true,
-      secure: false,
+      httpOnly: true, // 클라이언트에서 쿠키를 JavaScript로 제어할 수 없도록 설정하는 옵션
+      secure: false, // true로 설정하면 https를 통해서만 쿠키가 전송
+      maxAge: 24 * 60 * 60 * 1000, // 쿠키 유효기간 설정
     },
   })
 );
