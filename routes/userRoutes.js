@@ -1,7 +1,6 @@
 // routes/userRoutes.js
 const express = require("express");
 const userController = require("../controllers/userController");
-const authController = require("../controllers/authController");
 const router = express.Router();
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
@@ -17,6 +16,5 @@ router
   .get(userController.getUser)
   .patch(isLoggedIn, userController.updateUser)
   .delete(isLoggedIn, userController.deleteUser);
-
 
 module.exports = router;
