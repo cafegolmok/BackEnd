@@ -68,6 +68,8 @@ app.use("/tags", tagRoutes);
 app.use("/auth", authRoutes);
 app.use("/categories", categoryRoutes);
 
+app.use("/uploads", express.static("uploads"));
+
 // 404 에러 처리
 app.use((req, res, next) => {
   var err = new Error("찾을 수 없는 페이지입니다.");

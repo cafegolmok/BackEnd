@@ -86,6 +86,7 @@ exports.signup = async (req, res, next) => {
           id: newUser.id,
           email: newUser.email,
           nickname: newUser.nickname,
+          profileImage: newUser.profileImage,
         },
       });
     });
@@ -158,9 +159,17 @@ exports.login = async (req, res, next) => {
           console.error(loginErr);
           return next(loginErr);
         }
-        return res
-          .status(200)
-          .json({ message: "로그인이 성공적으로 완료되었습니다." });
+
+        const updatedUser = await User.findOne({ where: { id: user.id } });
+        return res.status(200).json({
+          message: "로그인이 성공적으로 완료되었습니다.",
+          user: {
+            id: updatedUser.id,
+            email: updatedUser.email,
+            nickname: updatedUser.nickname,
+            profileImage: updatedUser.profileImage,
+          },
+        });
       });
     })(req, res, next);
   } catch (error) {
@@ -196,5 +205,17 @@ exports.logout = (req, res) => {
     });
   } else {
     return res.status(400).json({ message: "이미 로그아웃 상태입니다." });
+  }
+};
+
+// 로그인 상태 체크
+exports.checkLoginStatus = (req, res, next) => {
+  if (req.session) {
+    // 세션에 사용자 정보가 있는 경우
+    res.status(200).json({ message: "로그인 상태 입니다." });
+    console.log(req.session.user);
+  } else {
+    // 세션에 사용자 정보가 없는 경우
+    res.status(401).json({ message: "로그아웃 상태 입니다." });
   }
 };
