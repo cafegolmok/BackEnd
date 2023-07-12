@@ -16,7 +16,7 @@ const {
 
 // 회원가입 처리
 exports.signup = async (req, res, next) => {
-  const { email, nickname, password, passwordConfirm } = req.body;
+  const { email, nickname, password, passwordConfirm, profileImage } = req.body;
 
   // 회원가입 입력 유효성 검사
   const emailErrors = validateSignupEmail(email);
@@ -72,6 +72,7 @@ exports.signup = async (req, res, next) => {
       email,
       nickname,
       password: hash,
+      profileImage,
     });
 
     // Passport login
@@ -80,14 +81,18 @@ exports.signup = async (req, res, next) => {
         console.error(loginErr);
         return next(loginErr);
       }
+
+      // 세션에 사용자 정보 저장
+      req.session.user = {
+        id: newUser.id,
+        email: newUser.email,
+        nickname: newUser.nickname,
+        profileImage: newUser.profileImage,
+      };
+
       return res.status(201).json({
         message: "회원가입이 성공적으로 완료되었습니다.",
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          nickname: newUser.nickname,
-          profileImage: newUser.profileImage,
-        },
+        user: req.session.user,
       });
     });
   } catch (error) {
@@ -161,14 +166,18 @@ exports.login = async (req, res, next) => {
         }
 
         const updatedUser = await User.findOne({ where: { id: user.id } });
+
+        // 세션에 사용자 정보 저장
+        req.session.user = {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          nickname: updatedUser.nickname,
+          profileImage: updatedUser.profileImage,
+        };
+
         return res.status(200).json({
           message: "로그인이 성공적으로 완료되었습니다.",
-          user: {
-            id: updatedUser.id,
-            email: updatedUser.email,
-            nickname: updatedUser.nickname,
-            profileImage: updatedUser.profileImage,
-          },
+          user: req.session.user,
         });
       });
     })(req, res, next);
@@ -204,16 +213,18 @@ exports.logout = (req, res) => {
       });
     });
   } else {
-    return res.status(400).json({ message: "이미 로그아웃 상태입니다." });
+    return res.status(401).json({ message: "이미 로그아웃 상태입니다." });
   }
 };
 
 // 로그인 상태 체크
 exports.checkLoginStatus = (req, res, next) => {
-  if (req.session) {
+  if (req.session && req.session.user) {
     // 세션에 사용자 정보가 있는 경우
-    res.status(200).json({ message: "로그인 상태 입니다." });
-    console.log(req.session.user);
+    res.status(200).json({
+      message: "로그인 상태 입니다.",
+      user: req.session.user, // 사용자 정보 추가
+    });
   } else {
     // 세션에 사용자 정보가 없는 경우
     res.status(401).json({ message: "로그아웃 상태 입니다." });
