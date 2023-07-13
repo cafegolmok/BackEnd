@@ -66,7 +66,7 @@ app.use(
     cookie: {
       httpOnly: true, // 클라이언트에서 쿠키를 JavaScript로 제어할 수 없도록 설정하는 옵션
       secure: false, // true로 설정하면 https를 통해서만 쿠키가 전송
-      maxAge: 24 * 60 * 60 * 1000, // 쿠키 유효기간 설정
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 쿠키 유효기간 설정 (30일)
     },
   })
 );
