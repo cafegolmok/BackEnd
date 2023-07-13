@@ -120,6 +120,9 @@ exports.updateProfileImage = [
       // 변경된 사용자 정보 검색
       const user = await User.findOne({ where: { id } });
 
+      // 세션에 사용자 정보 업데이트
+      req.session.user.profileImage = user.profileImage;
+
       // 업데이트 성공 메시지 반환
       return res.status(200).json({
         message: "프로필 이미지가 성공적으로 업데이트되었습니다.",
