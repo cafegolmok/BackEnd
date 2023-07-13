@@ -6,8 +6,17 @@ const path = require("path");
 // 파일을 저장할 디렉토리 설정
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    let uploadPath;
+    if (file.fieldname === "profileImage") {
+      uploadPath = "uploads/profile"; // 프로필 이미지 저장 경로
+    } else if (file.fieldname === "cafeImage") {
+      uploadPath = "uploads/cafe"; // 카페 이미지 저장 경로
+    } else {
+      uploadPath = "uploads/default"; // 기본 이미지 저장 경로
+    }
+    cb(null, uploadPath);
   },
+
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname)); // 파일 이름 설정
   },
